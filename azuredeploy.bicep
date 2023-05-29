@@ -41,12 +41,11 @@ param mongoDbUserName string
 @secure()
 param mongoDbPassword string
 
+@description('Git repository URL for the application source. This defaults to the [`k-miyake/VectorSearchAiAssistant`](https://github.com/k-miyake/VectorSearchAiAssistant) repository.')
+param appGitRepository string = 'https://github.com/k-miyake/VectorSearchAiAssistant.git'
 
-@description('Git repository URL for the application source. This defaults to the [`AzureCosmosDB/VectorSearchAiAssistant`](https://github.com/AzureCosmosDB/VectorSearchAiAssistant) repository.')
-param appGitRepository string = 'https://github.com/AzureCosmosDB/VectorSearchAiAssistant.git'
-
-@description('Git repository branch for the application source. This defaults to the [**MongovCore** branch of the `AzureCosmosDB/VectorSearchAiAssistant`](https://github.com/AzureCosmosDB/VectorSearchAiAssistant/tree/MongovCore) repository.')
-param appGetRepositoryBranch string = 'MongovCore'
+@description('Git repository branch for the application source. This defaults to the [**MongovCore** branch of the `k-miyake/VectorSearchAiAssistant`](https://github.com/AzureCosmosDB/VectorSearchAiAssistant/tree/MongovCore) repository.')
+param appGetRepositoryBranch string = 'miyake-vector-demo'
 
 var openAiSettings = {
   name: '${name}-openai'
@@ -94,7 +93,7 @@ var mongovCoreSettings = {
 var cosmosContainers = {
   embeddingContainer: {
     name: 'embedding'
-    partitionKeyPath : '/id'
+    partitionKeyPath: '/id'
     maxThroughput: 1000
   }
   completionsContainer: {
@@ -169,7 +168,7 @@ resource cosmosDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022
   }
 }
 
-resource cosmosContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-08-15' = [for container in items(cosmosContainers):  {
+resource cosmosContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-08-15' = [for container in items(cosmosContainers): {
   parent: cosmosDatabase
   name: container.value.name
   properties: {
